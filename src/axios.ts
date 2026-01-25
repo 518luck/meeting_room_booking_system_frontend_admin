@@ -22,7 +22,7 @@ axiosInstance.interceptors.response.use(
   },
 
   async (error) => {
-    console.log("响应拦截器报错", error);
+    return error.response.data;
   },
 );
 

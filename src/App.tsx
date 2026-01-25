@@ -1,10 +1,13 @@
 import { RouterProvider } from "react-router-dom";
 import router from "@/routers";
+import { StyleProvider } from "@ant-design/cssinjs";
 
 function App() {
   return (
     <>
-      <RouterProvider router={router} />
+      <StyleProvider layer>
+        <RouterProvider router={router} />
+      </StyleProvider>
     </>
   );
 }

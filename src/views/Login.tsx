@@ -1,5 +1,7 @@
-import { Button, Form, Input } from "antd";
-import { useCallback } from "react";
+import { Button, Form, Input, message } from "antd";
+import { loginApi, type LoginData } from "@/api/login";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/stores/auth";
 
 interface LoginUser {
   username: string;
@@ -7,9 +9,25 @@ interface LoginUser {
 }
 
 const Login = () => {
-  const onFinish = useCallback((values: LoginUser) => {
+  const navigate = useNavigate();
+  const setAuth = useAuthStore((state) => state.setAuth);
+  const onFinish = async (values: LoginUser) => {
     console.log(values);
-  }, []);
+    const res = await loginApi({
+      username: values.username,
+      password: values.password,
+    });
+    if (res.code === 200 || res.code === 201) {
+      console.log("res", res);
+      setAuth(res.data as LoginData);
+      navigate("/");
+    } else {
+      if (typeof res.data === "string") {
+        message.error(res.data);
+      }
+    }
+    console.log("🚀 ~ Login ~ res:", res);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-500 via-purple-500 to-pink-500">
