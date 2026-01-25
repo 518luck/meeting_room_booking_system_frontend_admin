@@ -1,4 +1,4 @@
-import Aaa from "@/views/aaa";
+import Aaa from "@/views/Aaa";
 import Bbb from "@/views/Bbb";
 
 const mainRoutes = [
