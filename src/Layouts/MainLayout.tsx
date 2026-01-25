@@ -9,11 +9,6 @@ import { Breadcrumb, Layout, Menu, theme } from "antd";
 
 const { Header, Content, Sider } = Layout;
 
-const items1: MenuProps["items"] = ["1", "2", "3"].map((key) => ({
-  key,
-  label: `nav ${key}`,
-}));
-
 const items2: MenuProps["items"] = [
   UserOutlined,
   LaptopOutlined,
@@ -43,14 +38,7 @@ const MainLayout: React.FC = () => {
   return (
     <Layout className="min-h-screen">
       <Header style={{ display: "flex", alignItems: "center" }}>
-        <div className="demo-logo" />
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={["2"]}
-          items={items1}
-          style={{ flex: 1, minWidth: 0 }}
-        />
+        <h1 className="text-white">会议室订阅系统-后台管理</h1>
       </Header>
       <Layout>
         <Sider width={200} style={{ background: colorBgContainer }}>
