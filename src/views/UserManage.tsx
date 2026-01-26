@@ -126,32 +126,35 @@ const UserManage = () => {
   );
 
   return (
-    <div id="userManage-container">
-      <div className="userManage-form">
+    <div className="p-6 bg-gray-50 min-h-full">
+      {/* 搜索区域 */}
+      <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
         <Form
           form={form}
           onFinish={searchUser}
           name="search"
           layout="inline"
           colon={false}
+          className="flex flex-wrap gap-4"
         >
-          <Form.Item label="用户名" name="username">
-            <Input />
+          <Form.Item label="用户名" name="username" className="mb-0">
+            <Input className="w-40" placeholder="请输入用户名" />
           </Form.Item>
 
-          <Form.Item label="昵称" name="nickName">
-            <Input />
+          <Form.Item label="昵称" name="nickName" className="mb-0">
+            <Input className="w-40" placeholder="请输入昵称" />
           </Form.Item>
 
           <Form.Item
             label="邮箱"
             name="email"
             rules={[{ type: "email", message: "请输入合法邮箱地址!" }]}
+            className="mb-0"
           >
-            <Input />
+            <Input className="w-48" placeholder="请输入邮箱" />
           </Form.Item>
 
-          <Form.Item label=" ">
+          <Form.Item className="mb-0">
             <Button type="primary" htmlType="submit">
               搜索用户
             </Button>
@@ -159,7 +162,8 @@ const UserManage = () => {
         </Form>
       </div>
 
-      <div className="userManage-table">
+      {/* 表格区域 */}
+      <div className="bg-white rounded-lg shadow-sm p-6">
         <Table
           columns={columns}
           dataSource={userResult}
