@@ -11,7 +11,7 @@ export interface LoginData {
   accessToken: string;
   refreshToken: string;
   // 使用 Record<string, unknown> 代替 any，表示这是一个对象但属性类型待定
-  userInfo: Record<string, unknown>;
+  userInfo?: Record<string, unknown>;
 }
 
 /** * 统一响应包装结构
@@ -64,3 +64,23 @@ export const userSearchApi = async (
 ): Promise<ApiResponse<UserSearchResponse>> => {
   return await axiosInstance.get("/user/admin/search", { params });
 };
+
+//刷新token接口
+export interface RefreshTokenParams {
+  access_token: string;
+  refresh_token: string;
+}
+export interface RefreshTokenResponse {
+  code: number;
+  data: RefreshTokenParams;
+  message: string;
+}
+export async function refreshTokenApi(
+  refreshToken: string,
+): Promise<RefreshTokenResponse> {
+  return await axiosInstance.get("/user/refresh", {
+    params: {
+      refreshToken,
+    },
+  });
+}

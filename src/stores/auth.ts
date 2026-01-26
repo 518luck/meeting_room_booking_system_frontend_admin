@@ -5,7 +5,7 @@ import type { LoginData } from "@/api/login";
 interface AuthState {
   accessToken: string;
   refreshToken: string;
-  userInfo: Record<string, unknown>;
+  userInfo?: Record<string, unknown>;
   setAuth: (data: LoginData) => void;
   clearAuth: () => void;
 }
