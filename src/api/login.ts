@@ -53,8 +53,8 @@ export interface UserSearchResponse {
   users: UserItem[];
 }
 export interface UserSearchParams {
-  pageNo?: string;
-  pageSize?: string;
+  pageNo: number;
+  pageSize: number;
   username?: string;
   nickName?: string;
   email?: string;
@@ -62,7 +62,7 @@ export interface UserSearchParams {
 export const userSearchApi = async (
   params: UserSearchParams,
 ): Promise<ApiResponse<UserSearchResponse>> => {
-  return await axiosInstance.get("/user/admin/search", { params });
+  return await axiosInstance.get("/user/list", { params });
 };
 
 //刷新token接口
@@ -81,6 +81,19 @@ export async function refreshTokenApi(
   return await axiosInstance.get("/user/refresh", {
     params: {
       refreshToken,
+    },
+  });
+}
+
+export interface FreezeResponse {
+  code: number;
+  data: boolean;
+  message: string;
+}
+export async function freeze(id: number): Promise<FreezeResponse> {
+  return await axiosInstance.get("/user/freeze", {
+    params: {
+      id,
     },
   });
 }
