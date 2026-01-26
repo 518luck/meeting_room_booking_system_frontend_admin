@@ -33,3 +33,34 @@ export const loginApi = async (
 ): Promise<ApiResponse<LoginData>> => {
   return await axiosInstance.post("/user/admin/login", params);
 };
+
+// 用户列表
+export interface UserItem {
+  id: number;
+  username: string;
+  nickName: string;
+  email: string;
+  phoneNumber: string;
+  /** 是否被冻结 */
+  isFrozen: boolean;
+  /** 头像 URL */
+  headPic: string;
+  /** 创建时间（后端返回通常是 ISO 字符串） */
+  createTime: string;
+}
+export interface UserSearchResponse {
+  totalCount: number;
+  users: UserItem[];
+}
+export interface UserSearchParams {
+  pageNo?: string;
+  pageSize?: string;
+  username?: string;
+  nickName?: string;
+  email?: string;
+}
+export const userSearchApi = async (
+  params: UserSearchParams,
+): Promise<ApiResponse<UserSearchResponse>> => {
+  return await axiosInstance.get("/user/admin/search", { params });
+};
