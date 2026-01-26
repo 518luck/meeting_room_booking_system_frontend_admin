@@ -1,70 +1,68 @@
 import React from "react";
-import {
-  LaptopOutlined,
-  NotificationOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { Layout, Menu, theme } from "antd";
 import type { MenuProps } from "antd";
-import { Breadcrumb, Layout, Menu, theme } from "antd";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import mainRoutes from "@/routers/main";
 
 const { Header, Content, Sider } = Layout;
 
-const items2: MenuProps["items"] = [
-  UserOutlined,
-  LaptopOutlined,
-  NotificationOutlined,
-].map((icon, index) => {
-  const key = String(index + 1);
+/** 将路由数组映射为 antd Menu items */
+const mapRoutesToMenuItems = (): MenuProps["items"] => {
+  return mainRoutes
+    .filter((route) => route.handle?.label)
+    .map((route) => ({
+      key: route.path as string,
+      label: route.handle?.label as string,
+    }));
+};
 
-  return {
-    key: `sub${key}`,
-    icon: React.createElement(icon),
-    label: `subnav ${key}`,
-    children: Array.from({ length: 4 }).map((_, j) => {
-      const subKey = index * 4 + j + 1;
-      return {
-        key: subKey,
-        label: `option${subKey}`,
-      };
-    }),
-  };
-});
+const menuItems = mapRoutesToMenuItems();
 
 const MainLayout: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // 从 antd 中取出 token，用于保持 与 antd 默认背景色的一致性
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer },
   } = theme.useToken();
+
+  const selectedKey = location.pathname.split("/").filter(Boolean).pop() || "";
+
+  const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
+    navigate(key);
+  };
 
   return (
     <Layout className="min-h-screen">
-      <Header style={{ display: "flex", alignItems: "center" }}>
-        <h1 className="text-white">会议室订阅系统-后台管理</h1>
+      <Header className="flex items-center h-16 px-6 bg-[#001529]">
+        <h1 className="text-white text-lg font-bold">
+          会议室订阅系统-后台管理
+        </h1>
       </Header>
+
       <Layout>
-        <Sider width={200} style={{ background: colorBgContainer }}>
+        {/* Sider: 使用 style 动态注入 token 背景色，其余用 Tailwind */}
+        <Sider
+          width={200}
+          style={{ background: colorBgContainer }}
+          className="overflow-auto border-r border-gray-100"
+        >
           <Menu
             mode="inline"
-            defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub1"]}
-            style={{ height: "100%", borderInlineEnd: 0 }}
-            items={items2}
+            selectedKeys={[selectedKey]}
+            className="h-full border-none"
+            items={menuItems}
+            onClick={handleMenuClick}
           />
         </Sider>
-        <Layout style={{ padding: "0 24px 24px" }}>
-          <Breadcrumb
-            items={[{ title: "Home" }, { title: "List" }, { title: "App" }]}
-            style={{ margin: "16px 0" }}
-          />
+
+        <Layout className="p-6 bg-gray-50">
           <Content
-            style={{
-              padding: 24,
-              margin: 0,
-              minHeight: 280,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
+            style={{ background: colorBgContainer }}
+            className="m-0 p-6 min-h-[280px] rounded-lg shadow-sm"
           >
-            Content
+            <Outlet />
           </Content>
         </Layout>
       </Layout>
