@@ -145,3 +145,37 @@ export async function updateInfo(
 ): Promise<UpdateInfoResponse> {
   return await axiosInstance.post("/user/admin/update", params);
 }
+
+//修改密码
+export interface UpdatePasswordParams {
+  username: string;
+  email: string;
+  captcha: string;
+  password: string;
+}
+export interface UpdatePasswordResponse {
+  code: number;
+  data: string;
+  message: string;
+}
+export async function updatePassword(
+  params: UpdatePasswordParams,
+): Promise<UpdatePasswordResponse> {
+  return await axiosInstance.post("/user/admin/update_password", params);
+}
+
+//修改密码验证码
+export interface UpdatePasswordCaptchaResponse {
+  code: number;
+  data: string;
+  message: string;
+}
+export async function updatePasswordCaptcha(
+  email: string,
+): Promise<UpdatePasswordCaptchaResponse> {
+  return await axiosInstance.get("/user/update_password/captcha", {
+    params: {
+      address: email,
+    },
+  });
+}
