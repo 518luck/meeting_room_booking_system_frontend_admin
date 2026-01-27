@@ -4,6 +4,7 @@ import MainLayout from "@/Layouts/MainLayout";
 import authRoutes from "@/routers/auth";
 import ErrorPage from "@/Layouts/ErrorPage";
 import mainRoutes from "@/routers/main";
+import userRoutes from "@/routers/user";
 
 const routes: RouteObject[] = [
   {
@@ -15,6 +16,11 @@ const routes: RouteObject[] = [
     path: "/auth",
     Component: AuthLayout,
     children: [...authRoutes],
+  },
+  {
+    path: "/user",
+    Component: MainLayout,
+    children: [...userRoutes],
   },
   {
     path: "*",

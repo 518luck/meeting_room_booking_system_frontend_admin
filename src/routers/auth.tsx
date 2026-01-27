@@ -1,6 +1,7 @@
+import type { RouteObject } from "react-router-dom";
 import Login from "@/views/Login";
 
-const authRoutes = [
+const authRoutes: RouteObject[] = [
   {
     path: "Login",
     Component: Login,
