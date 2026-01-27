@@ -6,10 +6,16 @@ const userRoutes: RouteObject[] = [
   {
     path: "info_modify",
     Component: InfoModify,
+    handle: {
+      label: "信息修改",
+    },
   },
   {
     path: "password_modify",
     Component: PasswordModify,
+    handle: {
+      label: "密码修改",
+    },
   },
 ];
 
