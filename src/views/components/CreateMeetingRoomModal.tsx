@@ -9,10 +9,6 @@ interface CreateMeetingRoomModalProps {
   isOpen: boolean;
   handleClose: () => void;
 }
-const layout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
-};
 
 export function CreateMeetingRoomModal({
   isOpen,
@@ -38,43 +34,87 @@ export function CreateMeetingRoomModal({
 
   return (
     <Modal
-      title="创建会议室"
+      title={
+        <span className="text-lg font-semibold text-gray-800">创建会议室</span>
+      }
       open={isOpen}
       onOk={handleOk}
       onCancel={() => handleClose()}
       okText={"创建"}
+      width={520}
+      className="[&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:shadow-2xl [&_.ant-modal-header]:border-b [&_.ant-modal-header]:border-gray-100 [&_.ant-modal-header]:pb-4 [&_.ant-modal-footer]:border-t [&_.ant-modal-footer]:border-gray-100 [&_.ant-modal-footer]:pt-4"
+      okButtonProps={{
+        className:
+          "bg-blue-500 hover:bg-blue-600 border-none rounded-lg px-6 h-9",
+      }}
+      cancelButtonProps={{
+        className: "border-gray-300 hover:border-gray-400 rounded-lg px-6 h-9",
+      }}
     >
-      <Form form={form} colon={false} {...layout}>
+      <Form
+        form={form}
+        colon={false}
+        layout="vertical"
+        className="pt-4 space-y-1"
+      >
         <Form.Item
-          label="会议室名称"
+          label={<span className="text-gray-700 font-medium">会议室名称</span>}
           name="name"
           rules={[{ required: true, message: "请输入会议室名称!" }]}
+          className="mb-4"
         >
-          <Input />
+          <Input
+            placeholder="请输入会议室名称"
+            className="h-10 rounded-lg border-gray-300 hover:border-blue-400 focus:border-blue-500"
+          />
         </Form.Item>
 
         <Form.Item
-          label="位置"
+          label={<span className="text-gray-700 font-medium">位置</span>}
           name="location"
           rules={[{ required: true, message: "请输入会议室位置!" }]}
+          className="mb-4"
         >
-          <Input />
+          <Input
+            placeholder="请输入会议室位置"
+            className="h-10 rounded-lg border-gray-300 hover:border-blue-400 focus:border-blue-500"
+          />
         </Form.Item>
 
         <Form.Item
-          label="容纳人数"
+          label={<span className="text-gray-700 font-medium">容纳人数</span>}
           name="capacity"
           rules={[{ required: true, message: "请输入会议室容量!" }]}
+          className="mb-4"
         >
-          <InputNumber />
+          <InputNumber
+            placeholder="请输入容纳人数"
+            min={1}
+            className="w-full h-10 rounded-lg [&_.ant-input-number-input]:h-10 border-gray-300 hover:border-blue-400 focus:border-blue-500"
+          />
         </Form.Item>
 
-        <Form.Item label="设备" name="equipment">
-          <Input />
+        <Form.Item
+          label={<span className="text-gray-700 font-medium">设备</span>}
+          name="equipment"
+          className="mb-4"
+        >
+          <Input
+            placeholder="请输入设备信息，如：投影仪、白板等"
+            className="h-10 rounded-lg border-gray-300 hover:border-blue-400 focus:border-blue-500"
+          />
         </Form.Item>
 
-        <Form.Item label="描述" name="description">
-          <TextArea />
+        <Form.Item
+          label={<span className="text-gray-700 font-medium">描述</span>}
+          name="description"
+          className="mb-0"
+        >
+          <TextArea
+            placeholder="请输入会议室描述"
+            rows={3}
+            className="rounded-lg border-gray-300 hover:border-blue-400 focus:border-blue-500 resize-none"
+          />
         </Form.Item>
       </Form>
     </Modal>
