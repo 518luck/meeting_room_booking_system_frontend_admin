@@ -1,7 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getUserInfo } from "@/api/login";
-import type { MeetingRoomListParams } from "@/types/meeting-room.type";
-import { meetingRoomDelete, meetingRoomList } from "@/api/meetingRoom";
+import type {
+  CreateMeetingRoom,
+  MeetingRoomListParams,
+} from "@/types/meeting-room.type";
+import {
+  meetingRoomAdd,
+  meetingRoomDelete,
+  meetingRoomList,
+} from "@/api/meetingRoom";
 
 // 获取用户信息
 export const useUserInfo = () => {
@@ -28,6 +35,18 @@ export const useMeetingRoomDelete = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => meetingRoomDelete(id), // 执行的异步函数
+    onSuccess: () => {
+      // 删除成功后，手动触发会议室列表的刷新
+      queryClient.invalidateQueries({ queryKey: ["meetingRoomList"] });
+    },
+  });
+};
+
+// 新增会议室
+export const useMeetingRoomAdd = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params: CreateMeetingRoom) => meetingRoomAdd(params), // 执行的异步函数
     onSuccess: () => {
       // 删除成功后，手动触发会议室列表的刷新
       queryClient.invalidateQueries({ queryKey: ["meetingRoomList"] });

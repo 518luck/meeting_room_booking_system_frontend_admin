@@ -11,37 +11,47 @@ import { useCallback, useMemo, useState } from "react";
 import { useMeetingRoomList, useMeetingRoomDelete } from "@/hooks/apiHooks";
 import type { MeetingRoomItem } from "@/types/meeting-room.type";
 const { useForm } = Form;
+import { CreateMeetingRoomModal } from "@/views/components/CreateMeetingRoomModal";
 
 interface SearchMeetingRoom {
-  name: string;
-  capacity: number;
-  equipment: string;
+  name?: string;
+  capacity?: number;
+  equipment?: string;
 }
 
 const MeetingRoomManage = () => {
-  const [pageNo, setPageNo] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
-  const [searchMeetingRoomParams, setSearchMeetingRoomParams] =
+  const [pageNo, setPageNo] = useState<number>(1); // 当前页码
+  const [pageSize, setPageSize] = useState<number>(10); // 每页数量
+  const [searchMeetingRoomParams, setSearchMeetingRoomParams] = // 查询会议室参数
     useState<SearchMeetingRoom>({
       name: "",
-      capacity: 0,
+      capacity: undefined,
       equipment: "",
     });
+  const [createMeetingRoomModalIsOpen, setCreateMeetingRoomModalIsOpen] =
+    useState<boolean>(false); // 创建会议室弹窗是否打开
 
+  // 过滤空字符串 ,null , undefined
+  const filteredParams = Object.fromEntries(
+    Object.entries(searchMeetingRoomParams).filter(
+      ([_, value]) => value !== "" && value !== null && value !== undefined,
+    ),
+  );
   // 获取列表信息
   const { data: meetingRoomListData } = useMeetingRoomList({
     pageNo,
     pageSize,
-    ...searchMeetingRoomParams,
+    ...filteredParams,
   });
   // 解构列表信息
   let tableList;
   let tableTotal;
   if (typeof meetingRoomListData?.data !== "string") {
     tableList = meetingRoomListData?.data?.meetingRooms || [];
-    tableTotal = meetingRoomListData?.data?.totalCount || 0;
+    tableTotal = meetingRoomListData?.data?.totalCount;
     console.log("🚀 ~ MeetingRoomManage ~ tableList:", tableList);
   }
+  console.log("🚀 ~ MeetingRoomManage ~ tableTotal:", tableTotal);
 
   // 删除会议室
   const { mutate } = useMeetingRoomDelete();
@@ -150,6 +160,7 @@ const MeetingRoomManage = () => {
               <Button
                 type="primary"
                 className="bg-green-500 hover:bg-green-600 border-green-500 hover:border-green-600"
+                onClick={() => setCreateMeetingRoomModalIsOpen(true)}
               >
                 添加会议室
               </Button>
@@ -172,6 +183,11 @@ const MeetingRoomManage = () => {
           rowKey="id"
         />
       </div>
+      <CreateMeetingRoomModal
+        isOpen={createMeetingRoomModalIsOpen}
+        // 子组件定义类型为 ()=>void 因为这个地方的()=>setCreateMeetingRoomModalIsOpen为匿名函数,匿名函数内部执行且匿名函数也没有接收任何参数
+        handleClose={() => setCreateMeetingRoomModalIsOpen(false)}
+      />
     </div>
   );
 };

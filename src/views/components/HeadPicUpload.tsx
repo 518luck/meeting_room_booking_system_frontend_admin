@@ -6,7 +6,7 @@ const { Dragger } = Upload;
 
 interface HeadPicUploadProps {
   value?: string;
-  onChange?: (value: string) => void;
+  onChange?: (_: string) => void;
 }
 
 const HeadPicUpload = (props: HeadPicUploadProps) => {

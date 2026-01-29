@@ -43,3 +43,12 @@ export interface MeetingRoomListParams {
   /** 每页条数 */
   pageSize: number;
 }
+
+// 会议室新增
+export interface CreateMeetingRoom {
+  name: string;
+  capacity: number;
+  location: string;
+  equipment: string;
+  description: string;
+}

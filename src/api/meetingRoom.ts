@@ -3,6 +3,7 @@ import type {
   ApiResponse,
   MeetingRoomListParams,
   MeetingRoomListResponse,
+  CreateMeetingRoom,
 } from "@/types/meeting-room.type";
 
 // 会议室列表
@@ -19,4 +20,11 @@ export async function meetingRoomDelete(
   id: number,
 ): Promise<ApiResponse<boolean>> {
   return await axiosInstance.delete(`/meeting-room/${id}`);
+}
+
+//新增会议室
+export async function meetingRoomAdd(
+  params: CreateMeetingRoom,
+): Promise<ApiResponse<boolean>> {
+  return await axiosInstance.post("/meeting-room/create", params);
 }
