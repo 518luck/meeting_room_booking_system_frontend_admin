@@ -52,3 +52,8 @@ export interface CreateMeetingRoom {
   equipment: string;
   description: string;
 }
+
+// 更新会议室
+export interface UpdateMeetingRoom extends CreateMeetingRoom {
+  id: number;
+}

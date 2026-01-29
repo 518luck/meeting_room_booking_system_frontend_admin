@@ -3,11 +3,13 @@ import { getUserInfo } from "@/api/login";
 import type {
   CreateMeetingRoom,
   MeetingRoomListParams,
+  UpdateMeetingRoom,
 } from "@/types/meeting-room.type";
 import {
   meetingRoomAdd,
   meetingRoomDelete,
   meetingRoomList,
+  meetingRoomUpdate,
 } from "@/api/meetingRoom";
 
 // 获取用户信息
@@ -47,6 +49,18 @@ export const useMeetingRoomAdd = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (params: CreateMeetingRoom) => meetingRoomAdd(params), // 执行的异步函数
+    onSuccess: () => {
+      // 删除成功后，手动触发会议室列表的刷新
+      queryClient.invalidateQueries({ queryKey: ["meetingRoomList"] });
+    },
+  });
+};
+
+//更新会议室
+export const useMeetingRoomUpdate = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params: UpdateMeetingRoom) => meetingRoomUpdate(params), // 执行的异步函数
     onSuccess: () => {
       // 删除成功后，手动触发会议室列表的刷新
       queryClient.invalidateQueries({ queryKey: ["meetingRoomList"] });

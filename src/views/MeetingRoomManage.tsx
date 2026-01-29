@@ -12,6 +12,7 @@ import { useMeetingRoomList, useMeetingRoomDelete } from "@/hooks/apiHooks";
 import type { MeetingRoomItem } from "@/types/meeting-room.type";
 const { useForm } = Form;
 import { CreateMeetingRoomModal } from "@/views/components/CreateMeetingRoomModal";
+import { UpdateMeetingRoomModal } from "@/views/components/UpdateMeetingRoom";
 
 interface SearchMeetingRoom {
   name?: string;
@@ -30,6 +31,8 @@ const MeetingRoomManage = () => {
     });
   const [createMeetingRoomModalIsOpen, setCreateMeetingRoomModalIsOpen] =
     useState<boolean>(false); // 创建会议室弹窗是否打开
+  const [updateId, setUpdateId] = useState<number>(0); // 更新会议室id
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false); // 更新会议室弹窗是否打开
 
   // 过滤空字符串 ,null , undefined
   const filteredParams = Object.fromEntries(
@@ -100,15 +103,26 @@ const MeetingRoomManage = () => {
       {
         title: "操作",
         render: (_, record) => (
-          <Popconfirm
-            title="会议室删除"
-            onConfirm={() => mutate(record.id)}
-            description="确认删除该会议室吗？"
-            okText="确认"
-            cancelText="取消"
-          >
-            <a href="#">删除</a>
-          </Popconfirm>
+          <div className="flex">
+            <Popconfirm
+              title="会议室删除"
+              onConfirm={() => mutate(record.id)}
+              description="确认删除该会议室吗？"
+              okText="确认"
+              cancelText="取消"
+            >
+              <a href="#">删除</a>
+            </Popconfirm>
+            <a
+              href="#"
+              onClick={() => {
+                setIsUpdateModalOpen(true);
+                setUpdateId(record.id);
+              }}
+            >
+              更新
+            </a>
+          </div>
         ),
       },
     ],
@@ -122,6 +136,7 @@ const MeetingRoomManage = () => {
 
   const [form] = useForm();
 
+  // 分页
   const changePage = useCallback(function (pageNo: number, pageSize: number) {
     setPageNo(pageNo);
     setPageSize(pageSize);
@@ -187,6 +202,11 @@ const MeetingRoomManage = () => {
         isOpen={createMeetingRoomModalIsOpen}
         // 子组件定义类型为 ()=>void 因为这个地方的()=>setCreateMeetingRoomModalIsOpen为匿名函数,匿名函数内部执行且匿名函数也没有接收任何参数
         handleClose={() => setCreateMeetingRoomModalIsOpen(false)}
+      />
+      <UpdateMeetingRoomModal
+        isOpen={isUpdateModalOpen}
+        handleClose={() => setIsUpdateModalOpen(false)}
+        updateId={updateId}
       />
     </div>
   );
