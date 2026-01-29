@@ -1,6 +1,16 @@
-import { Badge, Button, Form, Input, Table, type TableProps } from "antd";
+import {
+  Badge,
+  Button,
+  Form,
+  Input,
+  Popconfirm,
+  Table,
+  type TableProps,
+} from "antd";
 import { useCallback, useMemo, useState } from "react";
-import { useForm } from "antd/es/form/Form";
+import { useMeetingRoomList, useMeetingRoomDelete } from "@/hooks/apiHooks";
+import type { MeetingRoomItem } from "@/types/meeting-room.type";
+const { useForm } = Form;
 
 interface SearchMeetingRoom {
   name: string;
@@ -8,27 +18,36 @@ interface SearchMeetingRoom {
   equipment: string;
 }
 
-interface MeetingRoomSearchResult {
-  id: number;
-  name: string;
-  capacity: number;
-  location: string;
-  equipment: string;
-  description: string;
-  isBooked: boolean;
-  createTime: Date;
-  updateTime: Date;
-}
-
 const MeetingRoomManage = () => {
   const [pageNo, setPageNo] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
-  const [meetingRoomResult, setMeetingRoomResult] = useState<
-    Array<MeetingRoomSearchResult>
-  >([]);
+  const [searchMeetingRoomParams, setSearchMeetingRoomParams] =
+    useState<SearchMeetingRoom>({
+      name: "",
+      capacity: 0,
+      equipment: "",
+    });
+
+  // 获取列表信息
+  const { data: meetingRoomListData } = useMeetingRoomList({
+    pageNo,
+    pageSize,
+    ...searchMeetingRoomParams,
+  });
+  // 解构列表信息
+  let tableList;
+  let tableTotal;
+  if (typeof meetingRoomListData?.data !== "string") {
+    tableList = meetingRoomListData?.data?.meetingRooms || [];
+    tableTotal = meetingRoomListData?.data?.totalCount || 0;
+    console.log("🚀 ~ MeetingRoomManage ~ tableList:", tableList);
+  }
+
+  // 删除会议室
+  const { mutate } = useMeetingRoomDelete();
 
   // 头部表格
-  const columns: TableProps<MeetingRoomSearchResult>["columns"] = useMemo(
+  const columns: TableProps<MeetingRoomItem>["columns"] = useMemo(
     () => [
       {
         title: "名称",
@@ -71,20 +90,25 @@ const MeetingRoomManage = () => {
       {
         title: "操作",
         render: (_, record) => (
-          <a href="#" onClick={() => {}}>
-            删除
-          </a>
+          <Popconfirm
+            title="会议室删除"
+            onConfirm={() => mutate(record.id)}
+            description="确认删除该会议室吗？"
+            okText="确认"
+            cancelText="取消"
+          >
+            <a href="#">删除</a>
+          </Popconfirm>
         ),
       },
     ],
-    [],
+    [mutate],
   );
 
   // 搜索会议室
-  const searchMeetingRoom = useCallback(
-    async (values: SearchMeetingRoom) => {},
-    [],
-  );
+  const searchMeetingRoom = useCallback(async (values: SearchMeetingRoom) => {
+    setSearchMeetingRoomParams(values);
+  }, []);
 
   const [form] = useForm();
 
@@ -138,11 +162,12 @@ const MeetingRoomManage = () => {
       <div className="bg-white rounded-lg shadow-sm p-6">
         <Table
           columns={columns}
-          dataSource={meetingRoomResult}
+          dataSource={tableList}
           pagination={{
             current: pageNo,
             pageSize: pageSize,
             onChange: changePage,
+            total: tableTotal,
           }}
           rowKey="id"
         />
