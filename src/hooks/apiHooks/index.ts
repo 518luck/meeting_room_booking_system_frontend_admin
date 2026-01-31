@@ -4,7 +4,7 @@ import type {
   CreateMeetingRoom,
   MeetingRoomListParams,
   UpdateMeetingRoom,
-} from "@/types/meeting-room.type";
+} from "@/types/meeting-room";
 import {
   meetingRoomAdd,
   meetingRoomDelete,

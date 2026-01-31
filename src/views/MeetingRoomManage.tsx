@@ -9,7 +9,7 @@ import {
 } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useMeetingRoomList, useMeetingRoomDelete } from "@/hooks/apiHooks";
-import type { MeetingRoomItem } from "@/types/meeting-room.type";
+import type { MeetingRoomItem } from "@/types/meeting-room";
 const { useForm } = Form;
 import { CreateMeetingRoomModal } from "@/views/components/CreateMeetingRoomModal";
 import { UpdateMeetingRoomModal } from "@/views/components/UpdateMeetingRoom";

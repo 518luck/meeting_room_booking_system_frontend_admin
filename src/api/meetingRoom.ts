@@ -6,7 +6,7 @@ import type {
   CreateMeetingRoom,
   MeetingRoomItem,
   UpdateMeetingRoom,
-} from "@/types/meeting-room.type";
+} from "@/types/meeting-room";
 
 // 会议室列表
 export async function meetingRoomList(
