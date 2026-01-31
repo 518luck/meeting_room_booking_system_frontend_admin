@@ -6,7 +6,6 @@ import {
   Popconfirm,
   Table,
   TimePicker,
-  message,
   type TableProps,
 } from "antd";
 import { useState } from "react";
@@ -14,7 +13,12 @@ import type { UserItem } from "@/api/login";
 import type { MeetingRoomItem } from "@/types/meeting-room";
 import dayjs from "dayjs";
 import type { SearchBooking } from "@/types/booking";
-import { useBookingList } from "@/hooks/apiHooks/booking";
+import {
+  useBookingList,
+  useApplyBooking,
+  useRejectBooking,
+  useUnbindBooking,
+} from "@/hooks/apiHooks/booking";
 
 const { useForm } = Form;
 
@@ -33,7 +37,6 @@ interface BookingSearchResult {
 const BookingManage = () => {
   const [pageNo, setPageNo] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
-  const [num, setNum] = useState(0);
   const [searchParams, setSearchParams] = useState<SearchBooking>({}); // 搜索参数
 
   const columns: TableProps<BookingSearchResult>["columns"] = [
@@ -75,6 +78,25 @@ const BookingManage = () => {
     {
       title: "审批状态",
       dataIndex: "status",
+      onFilter: (value, record) => record.status.startsWith(value as string),
+      filters: [
+        {
+          text: "审批通过",
+          value: "审批通过",
+        },
+        {
+          text: "审批驳回",
+          value: "审批驳回",
+        },
+        {
+          text: "申请中",
+          value: "申请中",
+        },
+        {
+          text: "已解除",
+          value: "已解除",
+        },
+      ],
     },
     {
       title: "预定时间",
@@ -93,22 +115,73 @@ const BookingManage = () => {
     },
     {
       title: "操作",
-      render: (_, record) => <div></div>,
+      render: (_, record) => (
+        <div>
+          <Popconfirm
+            title="通过申请"
+            description="确认通过吗？"
+            onConfirm={() => changeStatus(record.id, "apply")}
+            okText="Yes"
+            cancelText="No"
+          >
+            <a href="#">通过</a>
+          </Popconfirm>
+
+          <br />
+          <Popconfirm
+            title="驳回申请"
+            description="确认驳回吗？"
+            onConfirm={() => changeStatus(record.id, "reject")}
+            okText="Yes"
+            cancelText="No"
+          >
+            <a href="#">驳回</a>
+          </Popconfirm>
+
+          <br />
+          <Popconfirm
+            title="解除申请"
+            description="确认解除吗？"
+            onConfirm={() => changeStatus(record.id, "unbind")}
+            okText="Yes"
+            cancelText="No"
+          >
+            <a href="#">解除</a>
+          </Popconfirm>
+
+          <br />
+        </div>
+      ),
     },
   ];
 
+  // 列表接口
   const { data: bookingListDataObject } = useBookingList({
     searchBooking: searchParams,
     pageNo,
     pageSize,
   });
-
+  // 从列表接口提取数据数组和总记录数
   const bookingListDataArray = bookingListDataObject?.data?.bookings || [];
   const totalCount = bookingListDataObject?.data?.totalCount || 0;
-  console.log(
-    "🚀 ~ BookingManage ~ bookingListDataArray:",
-    bookingListDataArray,
-  );
+
+  // 预约申请
+  const { mutate: applyBooking } = useApplyBooking();
+  // 预约拒绝
+  const { mutate: rejectBooking } = useRejectBooking();
+  // 已解除预约
+  const { mutate: unbindBooking } = useUnbindBooking();
+
+  // 改变预约状态
+  const changeStatus = (id: number, status: string) => {
+    if (status === "apply") {
+      applyBooking(id);
+    } else if (status === "reject") {
+      rejectBooking(id);
+    } else if (status === "unbind") {
+      unbindBooking(id);
+    }
+  };
 
   // 搜索预约
   const searchBooking = async (values: SearchBooking) => {
@@ -118,18 +191,7 @@ const BookingManage = () => {
 
   const [form] = useForm();
 
-  // useEffect(() => {
-  //   searchBooking({
-  //     username: form.getFieldValue("username"),
-  //     meetingRoomName: form.getFieldValue("meetingRoomName"),
-  //     meetingRoomPosition: form.getFieldValue("meetingRoomPosition"),
-  //     rangeStartDate: form.getFieldValue("rangeStartDate"),
-  //     rangeStartTime: form.getFieldValue("rangeStartTime"),
-  //     rangeEndDate: form.getFieldValue("rangeEndDate"),
-  //     rangeEndTime: form.getFieldValue("rangeEndTime"),
-  //   });
-  // }, [pageNo, pageSize, num]);
-
+  // 改变分页
   const changePage = function (pageNo: number, pageSize: number) {
     setPageNo(pageNo);
     setPageSize(pageSize);
@@ -183,6 +245,7 @@ const BookingManage = () => {
 
       <div className="bookingManage-table">
         <Table
+          rowKey="id"
           columns={columns}
           dataSource={bookingListDataArray}
           pagination={{
