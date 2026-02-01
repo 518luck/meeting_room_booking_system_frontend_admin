@@ -20,6 +20,8 @@ export default defineConfig([
       globals: globals.browser,
     },
     rules: {
+      //控制台输出报错
+      "no-console": "error",
       "no-unused-vars": [
         "error",
         {

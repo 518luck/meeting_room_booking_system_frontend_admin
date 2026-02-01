@@ -27,7 +27,8 @@ axiosInstance.interceptors.request.use(
 // 响应拦截器：处理响应和错误
 interface PendingTask {
   config: AxiosRequestConfig;
-  resolve: (value?: unknown) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  resolve: (_: any) => void;
 }
 
 let refreshing = false;

@@ -40,21 +40,21 @@ const MeetingRoomManage = () => {
       ([_, value]) => value !== "" && value !== null && value !== undefined,
     ),
   );
+
   // 获取列表信息
   const { data: meetingRoomListData } = useMeetingRoomList({
     pageNo,
     pageSize,
     ...filteredParams,
   });
+
   // 解构列表信息
   let tableList;
   let tableTotal;
   if (typeof meetingRoomListData?.data !== "string") {
     tableList = meetingRoomListData?.data?.meetingRooms || [];
     tableTotal = meetingRoomListData?.data?.totalCount;
-    console.log("🚀 ~ MeetingRoomManage ~ tableList:", tableList);
   }
-  console.log("🚀 ~ MeetingRoomManage ~ tableTotal:", tableTotal);
 
   // 删除会议室
   const { mutate } = useMeetingRoomDelete();
