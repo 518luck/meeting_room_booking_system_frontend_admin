@@ -4,7 +4,7 @@ import { refreshTokenApi } from "@/api/login";
 import { message } from "antd";
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/",
+  baseURL: "http://localhost/api",
   timeout: 10000,
 });
 
@@ -44,6 +44,14 @@ axiosInstance.interceptors.response.use(
     if (!error.response) return Promise.reject(error);
 
     const { data, config } = error.response;
+
+    if (config.url.includes("/user/refresh")) {
+      refreshing = false;
+      queue.length = 0;
+      message.error("登录过期，请重新登录");
+      window.location.href = "/auth/login";
+      return Promise.reject(error);
+    }
 
     if (refreshing) {
       return new Promise((resolve) => {

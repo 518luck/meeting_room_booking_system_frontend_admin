@@ -6,7 +6,8 @@ interface AuthState {
   accessToken: string;
   refreshToken: string;
   userInfo?: Record<string, unknown>;
-  setAuth: (data: LoginData) => void;
+  // 设置认证信息
+  setAuth: (_: LoginData) => void;
   clearAuth: () => void;
 }
 
