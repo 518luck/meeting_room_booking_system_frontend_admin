@@ -4,7 +4,7 @@ import { refreshTokenApi } from "@/api/login";
 import { message } from "antd";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost/api",
+  baseURL: "http://1.116.226.29/api",
   timeout: 10000,
 });
 
